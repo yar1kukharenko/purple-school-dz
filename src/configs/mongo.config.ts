@@ -6,7 +6,7 @@ export const getMongoConfig = async (
 ): Promise<MongooseModuleOptions> => {
 	return {
 		uri: getMongoString(configService),
-		...getMongoOptions,
+		...getMongoOptions(),
 	};
 };
 
@@ -23,6 +23,6 @@ const getMongoString = (configService: ConfigService) =>
 	configService.get('MONGO_AUTHDATABASE');
 
 const getMongoOptions = () => ({
-	useCreateIndex: true,
+	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
