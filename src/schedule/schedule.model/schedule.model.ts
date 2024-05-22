@@ -9,6 +9,8 @@ export class ScheduleModel {
 	roomId: number;
 	@Prop({ required: true })
 	date: Date;
+	@Prop({ required: false, default: null })
+	deletedAt: Date;
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(ScheduleModel);

@@ -33,4 +33,8 @@ export class RoomService {
 			new: true,
 		});
 	}
+
+	async softDelete(id: string): Promise<RoomDocument> {
+		return this.roomModel.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
+	}
 }

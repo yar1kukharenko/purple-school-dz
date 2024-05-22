@@ -13,6 +13,8 @@ export class RoomModel {
 	approach: number;
 	@Prop({ type: () => [String], required: true })
 	photos: string[];
+	@Prop({ required: false, default: null })
+	deletedAt: Date;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(RoomModel);

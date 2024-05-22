@@ -33,22 +33,30 @@ export class ScheduleController {
 		return await this.scheduleService.get(id);
 	}
 
-	@Get('getByRoom/roomId')
+	@Get('getByRoom/:roomId')
 	async findByRoom(@Param('roomId') roomId: string) {
 		return await this.scheduleService.findByRoomId(roomId);
 	}
 
-	@Delete(':id')
-	async delete(@Param('id') id: string) {
-		const deletedSchedule = await this.scheduleService.delete(id);
+	@Delete('deleteByRoom/:roomId')
+	async deleteByRoom(@Param('roomId') roomId: string) {
+		const deletedSchedule = await this.scheduleService.deleteByRoomId(roomId);
 		if (!deletedSchedule) {
 			throw new HttpException(SCHEDULE_NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@Delete('deleteByRoom/roomId')
-	async deleteByRoom(@Param('roomId') roomId: string) {
-		const deletedSchedule = await this.scheduleService.deleteByRoomId(roomId);
+	@Delete(':id')
+	async softDelete(@Param('id') id: string) {
+		const deletedSchedule = await this.scheduleService.softDelete(id);
+		if (!deletedSchedule) {
+			throw new HttpException(SCHEDULE_NOT_FOUND, HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@Delete('hardDelete/:id')
+	async delete(@Param('id') id: string) {
+		const deletedSchedule = await this.scheduleService.delete(id);
 		if (!deletedSchedule) {
 			throw new HttpException(SCHEDULE_NOT_FOUND, HttpStatus.NOT_FOUND);
 		}

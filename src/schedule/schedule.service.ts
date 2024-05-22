@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ScheduleDocument, ScheduleModel } from './schedule.model/schedule.model';
 import { Model, Types } from 'mongoose';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { SCHEDULE_ALREADY_EXISTS } from './schedule.constants';
 
 @Injectable()
 export class ScheduleService {
@@ -13,6 +14,15 @@ export class ScheduleService {
 	) {}
 
 	async create(dto: CreateScheduleDto): Promise<ScheduleDocument> {
+		const existingSchedule = await this.scheduleModel
+			.findOne({
+				roomId: dto.roomId,
+				date: dto.date,
+			})
+			.exec();
+		if (existingSchedule) {
+			throw new HttpException(SCHEDULE_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+		}
 		return this.scheduleModel.create(dto);
 	}
 
@@ -40,5 +50,11 @@ export class ScheduleService {
 		return this.scheduleModel.findByIdAndUpdate(id, updatedScheduleDto, {
 			new: true,
 		});
+	}
+
+	async softDelete(id: string): Promise<ScheduleDocument> {
+		return this.scheduleModel
+			.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true })
+			.exec();
 	}
 }

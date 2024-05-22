@@ -33,7 +33,7 @@ export class RoomController {
 		return await this.roomService.findRoomById(id);
 	}
 
-	@Delete(':id')
+	@Delete('hardDelete/:id')
 	async delete(@Param('id') id: string) {
 		const deletedRoom = await this.roomService.delete(id);
 		if (!deletedRoom) {
