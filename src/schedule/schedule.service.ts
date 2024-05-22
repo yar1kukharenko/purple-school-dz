@@ -26,7 +26,7 @@ export class ScheduleService {
 		return this.scheduleModel.create(dto);
 	}
 
-	async get(id: string): Promise<ScheduleDocument> {
+	async get(id: string) {
 		return this.scheduleModel.findById(id).exec();
 	}
 

@@ -23,6 +23,11 @@ export class ScheduleController {
 		return await this.scheduleService.create(dto);
 	}
 
+	@Get('getByRoom/:roomId')
+	async findByRoom(@Param('roomId') roomId: string) {
+		return await this.scheduleService.findByRoomId(roomId);
+	}
+
 	@Get('getAll')
 	async getAll() {
 		return await this.scheduleService.findAll();
@@ -31,11 +36,6 @@ export class ScheduleController {
 	@Get(':id')
 	async get(@Param('id') id: string) {
 		return await this.scheduleService.get(id);
-	}
-
-	@Get('getByRoom/:roomId')
-	async findByRoom(@Param('roomId') roomId: string) {
-		return await this.scheduleService.findByRoomId(roomId);
 	}
 
 	@Delete('deleteByRoom/:roomId')

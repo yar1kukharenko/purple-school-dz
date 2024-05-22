@@ -13,6 +13,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { RoomService } from './room.service';
 import { ROOM_NOT_FOUND } from './room.constants';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { SCHEDULE_NOT_FOUND } from '../schedule/schedule.constants';
 
 @Controller('room')
 export class RoomController {
@@ -38,6 +39,14 @@ export class RoomController {
 		const deletedRoom = await this.roomService.delete(id);
 		if (!deletedRoom) {
 			throw new HttpException(ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@Delete(':id')
+	async softDelete(@Param('id') id: string) {
+		const deletedSchedule = await this.roomService.softDelete(id);
+		if (!deletedSchedule) {
+			throw new HttpException(SCHEDULE_NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 	}
 
