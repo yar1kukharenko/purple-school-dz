@@ -8,6 +8,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -29,8 +30,8 @@ export class ScheduleController {
 	}
 
 	@Get('getAll')
-	async getAll() {
-		return await this.scheduleService.findAll();
+	async getAll(@Query('page') page: number, @Query('limit') limit: number) {
+		return await this.scheduleService.findAll(page, limit);
 	}
 
 	@Get(':id')

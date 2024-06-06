@@ -24,8 +24,9 @@ export class RoomService {
 		return this.roomModel.findById(roomId).exec();
 	}
 
-	async findAll(): Promise<RoomModel[]> {
-		return this.roomModel.find().exec();
+	async findAll(page: number = 1, limit: number = 10): Promise<RoomModel[]> {
+		const skip = (page - 1) * limit;
+		return this.roomModel.find().skip(skip).limit(limit).exec();
 	}
 
 	async update(roomId: string, updatedRoomDto: UpdateRoomDto): Promise<RoomDocument> {

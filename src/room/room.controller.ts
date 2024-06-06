@@ -8,6 +8,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { RoomService } from './room.service';
@@ -25,8 +26,8 @@ export class RoomController {
 	}
 
 	@Get('getAll')
-	async getAll() {
-		return await this.roomService.findAll();
+	async getAll(@Query('page') page: number, @Query('limit') limit: number) {
+		return await this.roomService.findAll(page, limit);
 	}
 
 	@Get(':id')

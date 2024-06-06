@@ -42,8 +42,9 @@ export class ScheduleService {
 		return this.scheduleModel.find({ roomId: new Types.ObjectId(roomId) }).exec();
 	}
 
-	async findAll() {
-		return this.scheduleModel.find().exec();
+	async findAll(page: number = 1, limit: number = 10) {
+		const skip = (page - 1) * limit;
+		return this.scheduleModel.find().skip(skip).limit(limit).exec();
 	}
 
 	async update(id: string, updatedScheduleDto: UpdateScheduleDto) {
