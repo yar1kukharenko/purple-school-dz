@@ -3,4 +3,5 @@ export class CreateRoomDto {
 	floor: number;
 	approach: number;
 	photos: string[];
+	_id: string;
 }
