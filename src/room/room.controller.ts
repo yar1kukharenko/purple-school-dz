@@ -9,6 +9,8 @@ import {
 	Patch,
 	Post,
 	Query,
+	UsePipes,
+	ValidationPipe,
 } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { RoomService } from './room.service';
@@ -19,6 +21,7 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 export class RoomController {
 	constructor(private readonly roomService: RoomService) {}
 
+	@UsePipes(new ValidationPipe())
 	@Post('create')
 	async create(@Body() dto: CreateRoomDto) {
 		return await this.roomService.create(dto);
@@ -57,6 +60,7 @@ export class RoomController {
 		}
 	}
 
+	@UsePipes(new ValidationPipe())
 	@Patch(':id')
 	async patch(@Param('id') id: string, @Body() dto: UpdateRoomDto) {
 		const updatedRoom = await this.roomService.update(id, dto);

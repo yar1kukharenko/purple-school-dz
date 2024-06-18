@@ -4,9 +4,17 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { disconnect, Types } from 'mongoose';
 import { CreateRoomDto } from '../src/room/dto/create-room.dto';
-import { ROOM_NOT_FOUND } from '../src/room/room.constants';
+import {
+	FLOOR_MUST_BE_NUMBER,
+	PHOTOS_MUST_BE_ARRAY_OF_STRINGS,
+	ROOM_NOT_FOUND,
+} from '../src/room/room.constants';
 import { CreateScheduleDto } from '../src/schedule/dto/create-schedule.dto';
-import { SCHEDULE_ALREADY_EXISTS, SCHEDULE_NOT_FOUND } from '../src/schedule/schedule.constants';
+import {
+	DATE_MUST_BE_STRING,
+	SCHEDULE_ALREADY_EXISTS,
+	SCHEDULE_NOT_FOUND,
+} from '../src/schedule/schedule.constants';
 import { UpdateRoomDto } from '../src/room/dto/update-room.dto';
 import { UpdateScheduleDto } from '../src/schedule/dto/update-schedule.dto';
 
@@ -53,6 +61,17 @@ describe('AppController (e2e)', () => {
 			});
 	});
 
+	it('/room/create (POST) - fail (validator)', () => {
+		request(app.getHttpServer())
+			.post('/room/create')
+			.send({ ...testRoomDto, photos: ['', 3, 3, 1] })
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				expect(body.message).toContain(PHOTOS_MUST_BE_ARRAY_OF_STRINGS);
+				return;
+			});
+	});
+
 	it('/schedule/create (POST) - success', () => {
 		request(app.getHttpServer())
 			.post('/schedule/create')
@@ -61,6 +80,17 @@ describe('AppController (e2e)', () => {
 			.then(({ body }) => {
 				createScheduleId = body._id;
 				expect(createScheduleId).toBeDefined();
+				return;
+			});
+	});
+
+	it('/schedule/create (POST) - fail (validator)', () => {
+		request(app.getHttpServer())
+			.post('/schedule/create')
+			.send({ ...testScheduleDto, date: 3 })
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				expect(body.message).toContain(DATE_MUST_BE_STRING);
 				return;
 			});
 	});
@@ -139,6 +169,24 @@ describe('AppController (e2e)', () => {
 			});
 	});
 
+	it('/room/:id (PATCH) - fail (validator)', async () => {
+		const updatedDto: UpdateRoomDto = {
+			description: 'Updated Description',
+			floor: 3,
+			approach: 15,
+			photos: ['photo3.png', 'photo4.png'],
+		};
+
+		await request(app.getHttpServer())
+			.patch('/room/' + createRoomId)
+			.send({ ...updatedDto, floor: '3' })
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				expect(body.message).toContain(FLOOR_MUST_BE_NUMBER);
+				return;
+			});
+	});
+
 	it('/schedule/:id (PATCH) - success', async () => {
 		const updatedDto: UpdateScheduleDto = {
 			date: new Date().toLocaleDateString(),
@@ -152,6 +200,21 @@ describe('AppController (e2e)', () => {
 				expect(body._id).toBe(createScheduleId);
 				expect(body.roomId).toBe(roomId);
 				expect(new Date(body.date).toLocaleDateString()).toBe(updatedDto.date);
+				return;
+			});
+	});
+
+	it('/schedule/:id (PATCH) - fail (validator)', async () => {
+		const updatedDto: UpdateScheduleDto = {
+			date: new Date().toLocaleDateString(),
+		};
+
+		await request(app.getHttpServer())
+			.patch('/schedule/' + createScheduleId)
+			.send({ updatedDto, date: false })
+			.expect(400)
+			.then(({ body }: request.Response) => {
+				expect(body.message).toContain(DATE_MUST_BE_STRING);
 				return;
 			});
 	});

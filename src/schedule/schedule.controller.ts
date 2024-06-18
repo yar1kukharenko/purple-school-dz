@@ -9,6 +9,8 @@ import {
 	Patch,
 	Post,
 	Query,
+	UsePipes,
+	ValidationPipe,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -19,6 +21,7 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 export class ScheduleController {
 	constructor(private readonly scheduleService: ScheduleService) {}
 
+	@UsePipes(new ValidationPipe())
 	@Post('create')
 	async create(@Body() dto: CreateScheduleDto) {
 		return await this.scheduleService.create(dto);
@@ -74,6 +77,7 @@ export class ScheduleController {
 		}
 	}
 
+	@UsePipes(new ValidationPipe())
 	@Patch(':id')
 	async patch(@Param('id') id: string, @Body() dto: UpdateScheduleDto) {
 		const updatedSchedule = await this.scheduleService.update(id, dto);
