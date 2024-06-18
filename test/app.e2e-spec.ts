@@ -7,6 +7,8 @@ import { CreateRoomDto } from '../src/room/dto/create-room.dto';
 import { ROOM_NOT_FOUND } from '../src/room/room.constants';
 import { CreateScheduleDto } from '../src/schedule/dto/create-schedule.dto';
 import { SCHEDULE_ALREADY_EXISTS, SCHEDULE_NOT_FOUND } from '../src/schedule/schedule.constants';
+import { UpdateRoomDto } from '../src/room/dto/update-room.dto';
+import { UpdateScheduleDto } from '../src/schedule/dto/update-schedule.dto';
 
 const roomId = new Types.ObjectId().toHexString();
 const scheduleId = new Types.ObjectId().toHexString();
@@ -116,12 +118,11 @@ describe('AppController (e2e)', () => {
 			.then(({ body }: request.Response) => expect(body.message).toBe(SCHEDULE_NOT_FOUND)));
 
 	it('/room/:id (PATCH) - success', async () => {
-		const updatedDto: CreateRoomDto = {
+		const updatedDto: UpdateRoomDto = {
 			description: 'Updated Description',
 			floor: 3,
 			approach: 15,
 			photos: ['photo3.png', 'photo4.png'],
-			_id: createRoomId,
 		};
 
 		await request(app.getHttpServer())
@@ -139,10 +140,8 @@ describe('AppController (e2e)', () => {
 	});
 
 	it('/schedule/:id (PATCH) - success', async () => {
-		const updatedDto: CreateScheduleDto = {
-			roomId: roomId,
+		const updatedDto: UpdateScheduleDto = {
 			date: new Date().toLocaleDateString(),
-			_id: createScheduleId,
 		};
 
 		await request(app.getHttpServer())
@@ -151,19 +150,18 @@ describe('AppController (e2e)', () => {
 			.expect(200)
 			.then(({ body }: request.Response) => {
 				expect(body._id).toBe(createScheduleId);
-				expect(body.roomId).toBe(updatedDto.roomId);
+				expect(body.roomId).toBe(roomId);
 				expect(new Date(body.date).toLocaleDateString()).toBe(updatedDto.date);
 				return;
 			});
 	});
 
 	it('/room/:id (PATCH) - fail', async () => {
-		const updatedDto: CreateRoomDto = {
+		const updatedDto: UpdateRoomDto = {
 			description: 'Updated Description',
 			floor: 3,
 			approach: 15,
 			photos: ['photo3.png', 'photo4.png'],
-			_id: createRoomId,
 		};
 
 		await request(app.getHttpServer())
@@ -174,10 +172,8 @@ describe('AppController (e2e)', () => {
 	});
 
 	it('/schedule/:id (PATCH) - fail', async () => {
-		const updatedDto: CreateScheduleDto = {
-			roomId: roomId,
+		const updatedDto: UpdateScheduleDto = {
 			date: new Date().toLocaleDateString(),
-			_id: createScheduleId,
 		};
 
 		await request(app.getHttpServer())
