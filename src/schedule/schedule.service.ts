@@ -5,12 +5,16 @@ import { Model, Types } from 'mongoose';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { SCHEDULE_ALREADY_EXISTS } from './schedule.constants';
+import { RoomDocument, RoomModel } from '../room/room.model/room.model';
+import { ROOM_NOT_FOUND } from '../room/room.constants';
 
 @Injectable()
 export class ScheduleService {
 	constructor(
 		@InjectModel(ScheduleModel.name)
 		private readonly scheduleModel: Model<ScheduleDocument>,
+		@InjectModel(RoomModel.name)
+		private readonly roomModel: Model<RoomDocument>,
 	) {}
 
 	async create(dto: CreateScheduleDto): Promise<ScheduleDocument> {
@@ -20,8 +24,12 @@ export class ScheduleService {
 				date: dto.date,
 			})
 			.exec();
+		const existingRoom = await this.roomModel.findById(dto.roomId).exec();
 		if (existingSchedule) {
 			throw new HttpException(SCHEDULE_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+		}
+		if (!existingRoom) {
+			throw new HttpException(ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 		return this.scheduleModel.create(dto);
 	}
