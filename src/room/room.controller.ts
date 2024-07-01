@@ -37,8 +37,6 @@ export class RoomController {
 		const room = await this.roomService.findRoomById(id);
 		if (!room) {
 			throw new HttpException(ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
-		} else {
-			return room;
 		}
 	}
 
@@ -47,8 +45,6 @@ export class RoomController {
 		const deletedRoom = await this.roomService.delete(id);
 		if (!deletedRoom) {
 			throw new HttpException(ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
-		} else {
-			return deletedRoom;
 		}
 	}
 
@@ -66,8 +62,6 @@ export class RoomController {
 		const updatedRoom = await this.roomService.update(id, dto);
 		if (!updatedRoom) {
 			throw new HttpException(ROOM_NOT_FOUND, HttpStatus.NOT_FOUND);
-		} else {
-			return updatedRoom;
 		}
 	}
 }
