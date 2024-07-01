@@ -4,6 +4,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateReviewDto } from './dto/create-review.dto';
 
+const leaks = [];
+
+class Leak {}
+
 @Injectable()
 export class ReviewService {
 	constructor(
@@ -20,6 +24,7 @@ export class ReviewService {
 	}
 
 	async findByProductId(productId: string): Promise<ReviewDocument[]> {
+		leaks.push(new Leak());
 		return this.reviewModel.find({ productId }).exec();
 	}
 
